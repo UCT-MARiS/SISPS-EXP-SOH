@@ -5,24 +5,24 @@ Lawrence Stanton
 
 ## Summary
 
-This experiment is focused at investigating the long-term State of Health (SoH) effects of AGM sealed lead acid batteries in extreme low temperature conditions. Batteries will set to a variety of States of Charge (SoC) and then subjected to low temperature conditions for extended period of time, while being periodically cycled at room temperature to evaluate the SoH.
+This experiment is focused at investigating the long-term State of Health (SoH) effects of AGM sealed lead acid batteries in extreme low temperature conditions. Batteries will set to a variety of States of Charge (SoC) and then subjected to low temperature conditions for extended period of time, while being periodically cycled at 25 °C to evaluate the SoH.
 
 ## Basic Test Parameters
 
-| Parameter                        |     Value |
-|:---------------------------------|----------:|
-| Battery Manufacturer             |  Asterion |
-| Nominal Voltage                  | 12 V (6S) |
-| Nominal Capacity (1.5 A rate)    |    7.9 Ah |
-| Absolute Max Charge Current      |     2.7 A |
-| Absolute Max Charge Voltage      |    14.4 V |
-| Test Batch Battery Quantity      |        15 |
-| Stages                           |         5 |
-| Repetitions per Stage            |         4 |
-| Discharge Cycles per Repetition  |       2-3 |
-| Total Discharge Cycles           |   600-900 |
-| Total ETC Storage Time per Stage |    4 Days |
-| Total ETC Storage Time           |   30 Days |
+| Parameter                        |           Value |
+|:---------------------------------|----------------:|
+| Battery                          | Asterion HR12-9 |
+| Nominal Voltage                  |       12 V (6S) |
+| Nominal Capacity (1.5 A rate)    |          7.9 Ah |
+| Absolute Max Charge Current      |           2.7 A |
+| Absolute Max Charge Voltage      |          14.4 V |
+| Test Batch Battery Quantity      |              15 |
+| Stages                           |               5 |
+| Repetitions per Stage            |               4 |
+| Discharge Cycles per Repetition  |             2-3 |
+| Total Discharge Cycles           |         600-900 |
+| Total ETC Storage Time per Stage |          4 Days |
+| Total ETC Storage Time           |         30 Days |
 
 Estimated Total Test Time: **2 Months**
 
@@ -55,7 +55,7 @@ storage --> discharge
 discharge --> repetition
 repetition -->|Done| stage
 
-stage ------>|Done| done
+stage ----->|Done| done
 ```
 
 ### Full Discharge Test & EIS
@@ -253,4 +253,4 @@ All batteries will be returned to UCT after this experiment, as will be arranged
 
 ## Possible Early Exit Criteria
 
-Should the depth of discharge tests move to below 50% of the 9Ah rated capacity, some batteries or the entire test may be terminated early as this would indicate a conclusive result.
+Should the depth of discharge tests move to below 50% of the 9 Ah rated capacity, some batteries or the entire test may be terminated early as this would indicate a conclusive result.
