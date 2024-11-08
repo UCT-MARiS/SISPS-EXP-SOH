@@ -1,4 +1,16 @@
-# UCT003 Low Temperature State of Health Methodology
+---
+author: Lawrence Stanton
+date: November 2024
+documentclass: article
+papersize: a4
+geometry:
+  - top=2cm
+  - bottom=2cm
+  - left=3cm
+  - right=3cm
+  - heightrounded
+---
+# UCT003 Low Temperature State of Health Experiment Methodology
 
 Lawrence Stanton  
 **November 2024**
@@ -32,12 +44,12 @@ The experiment will be composed of several functional test programs:
 
 1. [Varied Discharge](#varied-discharge-preconditioning)
 2. [Low Temperature Storage](#low-temperature-storage)
-3. [Full Discharge Test & EIS](#full-discharge-test--eis)
+3. [Full Discharge Test and EIS](#full-discharge-test-and-eis)
 
 Each follows sequentially, and repeated for a range of storage temperatures and durations.
 
 ```mermaid
-flowchart TB
+flowchart LR
 
 start([ ])
 stage{For Each Stage}
@@ -58,16 +70,12 @@ repetition -->|Done| stage
 stage ----->|Done| done
 ```
 
-### Full Discharge Test & EIS
+### Full Discharge Test and EIS
 
 The following program should always be followed to perform a full discharge and EIS test:
 
 ```mermaid
----
-title: Full Discharge Test & EIS
----
-
-flowchart TB
+flowchart LR
 
 start([ ])
 eis[[EIS]]
@@ -77,7 +85,7 @@ wait(((Rest<br>30min)))
 bulk[Bulk Recharge<br>2.0A &rarr; 14.4 V]
 absorb[Absorption Recharge<br>14.2 V #rarr; 0.5 A]
 float[Float<br>13.7V, 30min]
-recharge[Crude Recharge<br>2.0 A #rarr; 5.0 Ah]
+recharge[Crude Recharge<br>2.0 A #rarr; 5.0 Ah &geq; 14.4 V]
 done([ ])
 
 start --> eis
@@ -93,7 +101,6 @@ cycle -->|Done| recharge
 recharge -----> done
 ```
 
-> [!TIP]
 > The `Crude Recharge` step is a basic recharge to ensure the battery is not left at a low SoC while other batteries may still be cycling. This step can be skipped if the battery will immediately proceed to varied discharge, since the operations are identical.
 
 The EIS program is the same as used in UCT002.
@@ -102,7 +109,6 @@ At least 2 discharge cycles are preformed per test, however 3 is preferable if t
 
 Both the EIS and discharge test are always done at room temperature, preferably in or soon after being in the water bath set to 25 °C. Allow at least 12 hours in the water bath following low temperature before starting. Record the temperature periodically for temperature verification.
 
-> [!CAUTION]
 > For -20 °C and below, allow the batteries at least 1h to warm up in air before placing in the water bath to avoid thermal stresses.
 
 Please monitor the discharge times and report any outliers or anomalies before proceeding to the next low temperature storage period.
@@ -112,22 +118,18 @@ Please monitor the discharge times and report any outliers or anomalies before p
 The varied discharge follows the exact same procedure as the full discharge test, except the discharge step is programmed to stop after a set discharge amount, and exits immediately following discharge (no cycling).
 
 ```mermaid
----
-title: Varied Discharge
----
-flowchart TB
+%%{init: {"flowchart": {"format": svg}} }%%
+flowchart LR
 
 start([ ])
-eis[[EIS]]
 wait(((Rest<br>30min)))
 bulk[Bulk Recharge<br>2.0A &rarr; 14.4 V]
 absorb[Absorption Recharge<br>14.2 V #rarr; 0.5 A]
 float[Float<br>13.7V, 30min]
-discharge["`Discharge<br>1.5 A &rarr; **n** Ah | ≤ 10.5 V`"]
+discharge[Discharge<br>1.5 A &rarr; n Ah &vert; &leq; 10.5 V]
 done([ ])
 
-start --> eis
-eis --> bulk
+start --> bulk
 bulk --> absorb
 absorb --> float
 float --> wait
@@ -135,7 +137,6 @@ wait --> discharge
 discharge --> done
 ```
 
-> [!IMPORTANT]
 > The deepest discharge batteries (`C10`-`C15`) should be done last and then immediately proceed to low temperature storage. It is acceptable to allow `C01`-`C09` to wait at their varied discharge SoC while `C10`-`C15` complete.
 
 The following amounts should be used for each battery:
@@ -158,9 +159,9 @@ The following amounts should be used for each battery:
 |  `C14`  |      6.0 Ah      |     18.% |
 |  `C15`  |      6.5 Ah      |     11.% |
 
-> [!NOTE]
-> `C15` will end very near to the 10.5 V cut-off voltage.
-> Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility. Proceed normally if this occurs, the SoC estimates will simply be scaled to assume C15 is at 0% SoC.
+> `C15` will end very near to the 10.5 V cut-off voltage.  
+Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility.  
+Proceed normally if this occurs, the SoC estimates will simply be scaled to assume C15 is at 0% SoC.
 
 ### Low Temperature Storage
 
@@ -183,11 +184,8 @@ Total Storage Time: **20 Days**
 
 Complete the schedule strictly in the above sequence from `S01` to `S10`.
 
-> [!NOTE]
-> Unlike previous experiments, this experiment will run from warmest to coldest temperatures.
-
-> [!WARNING]
-> Ensure batteries are dry after being in the water bath before placing in the ETC, and avoid water intruding into the cell's venting cap at the top of the battery.
+> Unlike previous experiments, this experiment will run from warmest to coldest temperatures.  
+Ensure batteries are dry after being in the water bath before placing in the ETC, and avoid water intruding into the cell's venting cap at the top of the battery.
 
 It is acceptable to remotely turn off the ETC and wait, for a maximum of 2 days, before starting discharge tests when the scheduled end time is outside working hours.
 
