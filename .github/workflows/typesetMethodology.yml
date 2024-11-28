@@ -1,0 +1,53 @@
+name: Methodology Typesetting
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - Docs/UCT003 SoH Methodology.md
+      - .github/workflows/typesetMethodology.yml
+
+jobs:
+  typeset:
+    name: Pandoc
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install mermaid-filter
+        run: |
+          npm install -g mermaid-filter
+          echo "$(npm root -g)/mermaid-filter" >> $GITHUB_PATH
+
+      - name: Install Pandoc
+        uses: pandoc/actions/setup@v1
+
+      - name: Install TexLive
+        uses: teatimeguest/setup-texlive-action@v3
+        with:
+          packages: |
+            scheme-basic
+            xcolor
+            booktabs
+            etoolbox
+            footnote
+
+      - name: Pandoc Typeset
+        run: |
+          pandoc --version
+          pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
+
+      - name: Upload PDF
+        uses: actions/upload-artifact@v3
+        with:
+          name: UCT003 SoH Methodology
+          path: UCT003 SoH Methodology.pdf
