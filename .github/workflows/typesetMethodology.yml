@@ -42,9 +42,11 @@ jobs:
             footnote
 
       - name: Pandoc Typeset
+        env:
+          MERMAID_FILTER_FORMAT: pdf
         run: |
           pandoc --version
-          MERMAID_FILTER_FORMAT=pdf pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
+          pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
 
       - name: Upload PDF
         uses: actions/upload-artifact@v4
