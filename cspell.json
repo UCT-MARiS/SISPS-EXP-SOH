@@ -14,7 +14,8 @@
     "teardowns",
     "teatimeguest",
     "texlive",
-    "xcolor"
+    "xcolor",
+    "xychart"
   ],
   "ignoreWords": [],
   "import": []
