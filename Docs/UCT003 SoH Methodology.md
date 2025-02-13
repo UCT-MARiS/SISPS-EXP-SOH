@@ -21,27 +21,30 @@ This experiment is focused at investigating the long-term State of Health (SoH) 
 
 ## Basic Test Parameters
 
-| Parameter                        |           Value |
-|:---------------------------------|----------------:|
-| Battery                          | Asterion HR12-9 |
-| Nominal Voltage                  |       12 V (6S) |
-| Nominal Capacity (1.57 A rate)   |         7.85 Ah |
-| Absolute Max Charge Current      |           2.7 A |
-| Absolute Max Charge Voltage      |          14.4 V |
-| Test Batch Battery Quantity      |              14 |
-| Stages                           |               5 |
-| Repetitions per Stage            |               4 |
-| Discharge Cycles per Repetition  |               3 |
-| Initial Preconditioning Cycles   |              42 |
-| Total Discharge Cycles           |             882 |
-| Total ETC Storage Time per Stage |          4 Days |
-| Total ETC Storage Time           |         30 Days |
+| Parameter                                |            Value |
+|:-----------------------------------------|-----------------:|
+| Battery                                  |  Asterion HR12-9 |
+| Nominal Voltage                          |        12 V (6S) |
+| Nominal Capacity (1.57 A rate)           |          7.85 Ah |
+| Absolute Max Charge Current              |            2.7 A |
+| Absolute Max Charge Voltage              |           14.4 V |
+| Test Batch Battery Quantity              |               14 |
+| Available Test Channels                  |                7 |
+| Stages                                   |                5 |
+| Storage Repetitions per Stage            | 4 (3x24h, 1x72h) |
+| Discharge Tests per Stage per Battery    |                1 |
+| Discharge Test Approx. Duration          |         15 hours |
+| Initial Preconditioning Cycles           |               14 |
+| Total Discharge Tests                    |               70 |
+| Total Discharge Test Time                |           7 Days |
+| Total ETC Storage Time per Stage         |           4 Days |
+| Total ETC Storage Time (Low Temperature) |          30 Days |
 
-Estimated Total Test Time: **2 Months**
+Estimated Total Test Time: **3 Months**
 
 ## Methodology
 
-The experiment will be composed of several functional test programs:
+The experiment will be composed of several functional test stages:
 
 1. [Varied Discharge](#varied-discharge)
 2. [Low Temperature Storage](#low-temperature-storage) (including EMF Voltage Measurement)
@@ -53,22 +56,22 @@ Each follows sequentially, and repeated for a range of storage temperatures and 
 flowchart LR
 
 start([ ])
-stage{For Each Stage}
-repetition{For Each Repetition}
+stage{Thermal Stages <br> S01-S10}
+repetition{Storage <br> Repetitions}
 varied[[Varied Discharge]]
 storage[[Storage]]
 discharge[[EIS & Full Discharge]]
 done([ ])
 
-start --> stage
-stage -->|Next| repetition
-repetition -->|Next| varied
-varied --> storage
-storage --> discharge
-discharge --> repetition
-repetition -->|Done| stage
+start --> discharge
+stage -->|Next| varied
+varied --> repetition
+repetition -->|Next| storage
+storage --> repetition
+repetition -->|Done| discharge
+discharge --> stage
 
-stage ----->|Done| done
+stage ---->|Done| done
 ```
 
 ### Full Discharge Test and EIS
@@ -80,92 +83,77 @@ flowchart LR
 
 start([ ])
 eis[[EIS]]
-cycle{n Cycles}
+cycle{2 Cycles}
 discharge[Discharge<br>1.57 A &rarr; 10.5 V]
-wait(((Rest<br>30min)))
+wait30_1(((Rest<br>30min)))
+wait30_2(((Rest<br>30min)))
+wait5(((Rest<br>5min)))
 bulk[Bulk Recharge<br>2.0A &rarr; 14.4 V]
-absorb[Absorption Recharge<br>14.2 V #rarr; 0.5 A]
-float[Float<br>13.7V, 30min]
-recharge[Crude Recharge<br>2.0 A #rarr; 5.0 Ah &geq; 14.4 V]
+absorb[Absorption Recharge<br>14.2 V #rarr; 0.3 A]
+float[Float<br>13.7V, 1h00min]
+%% recharge[Crude Recharge<br>2.0 A #rarr; 5.0 Ah &geq; 14.4 V]
 done([ ])
 
 start --> eis
-eis --> cycle 
-cycle -->|Next| bulk
+eis --> discharge 
+discharge --> wait30_1
+wait30_1 --> bulk
 bulk --> absorb
-absorb --> float
-float --> wait
-wait --> discharge
-discharge --> cycle
+absorb --> wait5
+wait5 --> float
+float --> wait30_2
+wait30_2 --> cycle
+cycle -->|Next| discharge
 
-cycle -->|Done| recharge
-recharge -----> done
+cycle -->|Done| done
 ```
 
-> The `Crude Recharge` step is a basic recharge to ensure the battery is not left at a low SoC while other batteries may still be cycling. This step can be skipped if the battery will immediately proceed to varied discharge, since the operations are identical.
+> The 30min rest periods evaluate for the EMF at that point, the 5min rest period is a simple workaround for the test bench, which may skip the float step if the current drops to zero.
 
-The EIS program is the same as used in UCT002.
+2 repetitions allow for a first partial discharge from the prior varied discharge conditions, following which a full recharge, full discharge, and second full recharge follow.
 
-3 discharge cycles are preferable for accuracy (as quoted for earlier), but can be reduced to 2 if practically necessary.
+The EIS program is the same as used in UCT002. Both the EIS and discharge test are always done at room temperature, but additional low temperature EIS tests may be performed if deemed necessary. Allow for 1 day at room temperature to warm up.
 
-Both the EIS and discharge test are always done at room temperature, preferably in or soon after being in the water bath set to 25 °C. Allow at least 12 hours in the water bath following low temperature before starting. Record the temperature periodically for temperature verification.
-
-> For -20 °C and below, allow the batteries at least 1h to warm up in air before placing in the water bath to avoid thermal stresses.
-
-Please monitor the discharge times and report any outliers or anomalies before proceeding to the next low temperature storage period.
+Please monitor the discharge amounts and report any if any battery drops to <5Ah discharge capacity or other anomalies before proceeding to the next varied discharge step.
 
 **Preconditioning**
 
-To verify the manufacturer's rated 7.85 Ah capacity at the 1.57 A (5 hour) discharge rate against the other charging parameters; at factory conditions prior to `S01` and the first varied discharge, the batteries should undergo an additional initial EIS and full discharge test. This is the additional 42 cycles mentioned in the basic test parameters. The program is otherwise identical. These few cycles should also remove any initial artifacts from the batteries' manufacturing.
+To evaluate the initial capacity for a 1.57 A (5 hour) discharge rate against the other charging parameters; at factory conditions prior to `S01` and the first varied discharge, the batteries should undergo an additional initial EIS and full discharge test. These few cycles should also remove any initial artefacts from the batteries' manufacturing.
 
 ### Varied Discharge
 
-The varied discharge follows the exact same procedure as the full discharge test, except the discharge step is programmed to stop after a set discharge amount, and exits immediately following discharge (no cycling).
+The varied discharge follows the final full recharge of the prior discharge test, and is therefore a simple discharge step:
 
 ```mermaid
 %%{init: {"flowchart": {"format": svg}} }%%
 flowchart LR
 
 start([ ])
-wait(((Rest<br>30min)))
-bulk[Bulk Recharge<br>2.0A &rarr; 14.4 V]
-absorb[Absorption Recharge<br>14.2 V #rarr; 0.5 A]
-float[Float<br>13.7V, 30min]
+
 discharge[Discharge<br>1.57 A &rarr; n Ah &vert; &leq; 10.5 V]
 done([ ])
 
-start --> bulk
-bulk --> absorb
-absorb --> float
-float --> wait
-wait --> discharge
+start --> discharge
 discharge --> done
 ```
 
-> The deepest discharge batteries (`C10`-`C14`) should be done last and then immediately proceed to low temperature storage. It is acceptable to allow `C01`-`C09` to wait at their varied discharge SoC while `C10`-`C14` complete.
+> The deepest discharge batteries (`C08`-`C14`) should be done last and then immediately proceed to low temperature storage. It is acceptable to allow `C01`-`C07` to wait at their varied discharge SoC while `C08`-`C14` complete.
+
+Initial discharge tests indicate a >6Ah initial capacity, given the charging parameters of this test, compared to the manufacturer's 1.57A capacity is 7.85Ah.
 
 The following amounts should be used for each battery:
 
-| Battery | Discharge Amount | Est. SoC |
-|:-------:|:----------------:|---------:|
-|  `C01`  |      0.00 Ah      |   100.% |
-|  `C02`  |      0.55 Ah      |    93.% |
-|  `C03`  |      1.10 Ah      |    86.% |
-|  `C04`  |      1.65 Ah      |    79.% |
-|  `C05`  |      2.20 Ah      |    72.% |
-|  `C06`  |      2.75 Ah      |    65.% |
-|  `C07`  |      3.30 Ah      |    58.% |
-|  `C08`  |      3.85 Ah      |    51.% |
-|  `C09`  |      4.40 Ah      |    44.% |
-|  `C10`  |      4.95 Ah      |    37.% |
-|  `C11`  |      5.50 Ah      |    30.% |
-|  `C12`  |      6.05 Ah      |    23.% |
-|  `C13`  |      6.60 Ah      |    16.% |
-|  `C14`  |      7.15 Ah      |     9.% |
+| Battery | Discharge Amount | Battery | Discharge Amount |
+|:-------:|:----------------:|:-------:|:----------------:|
+|  `C01`  |     0.00 Ah      |  `C08`  |     3.15 Ah      |
+|  `C02`  |     0.45 Ah      |  `C09`  |     3.60 Ah      |
+|  `C03`  |     0.90 Ah      |  `C10`  |     4.05 Ah      |
+|  `C04`  |     1.35 Ah      |  `C11`  |     4.50 Ah      |
+|  `C05`  |     1.80 Ah      |  `C12`  |     4.95 Ah      |
+|  `C06`  |     2.25 Ah      |  `C13`  |     5.40 Ah      |
+|  `C07`  |     2.70 Ah      |  `C14`  |     5.85 Ah      |
 
-> `C14` will end very near to the 10.5 V cut-off voltage.  
-Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility.  
-Proceed normally if this occurs, the SoC estimates will simply be scaled to assume `C14` is at 0% SoC.
+> `C14` will end very near to the 10.5 V cut-off voltage. Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility. Proceed normally if this occurs, the SoC estimates will simply be scaled to assume `C14` is at 0% SoC.
 
 ### Low Temperature Storage
 
@@ -184,7 +172,9 @@ The batteries shall be repeatedly stored in open circuit in the Environmental Te
 | `S09` |   -40 °C    |      3      |   24h    |
 | `S10` |   -40 °C    |      1      |   72h    |
 
-Total Storage Time: **20 Days**
+Between each stage there shall be an interim storage period of 24h at high temperature, which may either be done actively at 25 °C or passively in free air.
+
+Total Storage Time: **40 Days (20 at low temperature)**
 
 Complete the schedule strictly in the above sequence from `S01` to `S10`.
 
@@ -238,12 +228,12 @@ Please comment tests with the following format for unique and uniform identifica
 
 `UCT003-<DOD|VD|EIS>-<Battery>-<Stage>/<Repetition>-[Errata]`
 
-- `DOD|VD|EIS` - Depth of Discharge, Varied Discharge, or EIS (type of test).
-- `Battery` - Battery number (C01-C15).
-- `Stage` - Stage number (S01-S10).
-  - Use `S00` for initial preconditioning.
-- `Repetition` - Repetition number (R01-R03).
-- `[Errata]` - Any additional notes or deviations from the test plan. Make lab notes for details.
+* `DOD|VD|EIS` - Depth of Discharge, Varied Discharge, or EIS (type of test).
+* `Battery` - Battery number (C01-C15).
+* `Stage` - Stage number (S01-S10).
+  * Use `S00` for initial preconditioning.
+* `Repetition` - Repetition number (R01-R03).
+* `[Errata]` - Any additional notes or deviations from the test plan. Make lab notes for details.
 
 e.g. `UCT003-DOD-C01-S01/R01` for the depth of discharge test following the first repetition of the first stage on battery `C01`.
 

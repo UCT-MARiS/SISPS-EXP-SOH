@@ -3,7 +3,17 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": ["Masa", "pandoc", "teatimeguest", "texlive", "xcolor"],
+  "words": [
+    "documentclass",
+    "heightrounded",
+    "Masa",
+    "pandoc",
+    "papersize",
+    "teardowns",
+    "teatimeguest",
+    "texlive",
+    "xcolor"
+  ],
   "ignoreWords": [],
   "import": []
 }
