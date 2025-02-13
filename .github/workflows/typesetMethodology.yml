@@ -10,7 +10,7 @@ on:
 jobs:
   typeset:
     name: Pandoc
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     timeout-minutes: 3
 
@@ -24,9 +24,7 @@ jobs:
           node-version: "22"
 
       - name: Install mermaid-filter
-        # PUPPETEER_EXECUTABLE_PATH workaround for v19 deprecation: https://github.com/raghur/mermaid-filter/issues/125
         run: |
-          export PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
           npm install -g mermaid-filter
           echo "$(npm root -g)/mermaid-filter" >> $GITHUB_PATH
 
