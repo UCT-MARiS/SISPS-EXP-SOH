@@ -1,6 +1,6 @@
 ---
 author: Lawrence Stanton
-date: November 2024
+date: February 2025
 documentclass: article
 papersize: a4
 geometry:
@@ -13,7 +13,7 @@ geometry:
 # UCT003 Low Temperature State of Health Experiment Methodology
 
 Lawrence Stanton  
-**November 2024**
+**February 2025**
 
 ## Summary
 

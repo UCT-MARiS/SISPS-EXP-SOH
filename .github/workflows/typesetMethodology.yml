@@ -10,7 +10,7 @@ on:
 jobs:
   typeset:
     name: Pandoc
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     timeout-minutes: 3
 
@@ -24,7 +24,9 @@ jobs:
           node-version: "22"
 
       - name: Install mermaid-filter
+        # PUPPETEER_EXECUTABLE_PATH workaround for v19 deprecation: https://github.com/raghur/mermaid-filter/issues/125
         run: |
+          export PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
           npm install -g mermaid-filter
           echo "$(npm root -g)/mermaid-filter" >> $GITHUB_PATH
 
@@ -44,7 +46,7 @@ jobs:
       - name: Pandoc Typeset
         run: |
           pandoc --version
-          pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
+          MERMAID_FILTER_FORMAT=pdf pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
 
       - name: Upload PDF
         uses: actions/upload-artifact@v4
