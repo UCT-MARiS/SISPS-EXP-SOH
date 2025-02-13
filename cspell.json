@@ -4,7 +4,9 @@
   "dictionaryDefinitions": [],
   "dictionaries": [],
   "words": [
+    "booktabs",
     "documentclass",
+    "etoolbox",
     "heightrounded",
     "Masa",
     "pandoc",
