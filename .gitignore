@@ -1,3 +1,10 @@
-.DS_Store
-mermaid-filter.err
+# Python
+.conda
+Plots/
+
+# Documents
 *.pdf
+mermaid-filter.err
+
+# Other
+.DS_Store

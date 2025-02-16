@@ -8,14 +8,21 @@
     "documentclass",
     "etoolbox",
     "heightrounded",
+    "iloc",
     "Masa",
     "pandoc",
     "papersize",
+    "skiprows",
+    "suptitle",
     "teardowns",
     "teatimeguest",
     "texlive",
+    "twinx",
+    "usecols",
     "xcolor",
-    "xychart"
+    "xlabel",
+    "xychart",
+    "ylabel"
   ],
   "ignoreWords": [],
   "import": []

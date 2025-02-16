@@ -1,0 +1,14 @@
+name: SISPS-EXP-SOH
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ipykernel
+  - matplotlib
+  - numpy
+  - pandas
+  - openpyxl
+  - tabulate
+  - pip
+  - pip:
+      - darkdetect

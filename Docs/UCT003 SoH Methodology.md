@@ -59,15 +59,21 @@ start([ ])
 stage{Thermal Stages <br> S01-S10}
 repetition{Storage <br> Repetitions}
 varied[[Varied Discharge]]
-storage[[Storage]]
+coldStorage[[Low Temp Storage]]
+warmStorage[[High Temp Storage]]
+emfPre[EMF]
+emfPost[EMF]
 discharge[[EIS & Full Discharge]]
 done([ ])
 
 start --> discharge
 stage -->|Next| varied
 varied --> repetition
-repetition -->|Next| storage
-storage --> repetition
+repetition -->|Next| emfPre
+emfPre --> coldStorage
+coldStorage --> warmStorage
+warmStorage --> emfPost
+emfPost --> repetition
 repetition -->|Done| discharge
 discharge --> stage
 
