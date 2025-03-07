@@ -1,6 +1,7 @@
 # Python
 .conda
 Plots/
+__pycache__/
 
 # Documents
 *.pdf

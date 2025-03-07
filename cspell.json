@@ -13,6 +13,7 @@
     "skipfooter",
     "skiprows",
     "suptitle",
+    "twinx",
     "usecols",
     "xaxis",
     "yaxis",
