@@ -79,7 +79,7 @@ Perform a low temperature EMF measurement at any point of a low temperature stor
    2. Remove the battery and quickly probe the terminals.  
        The styrofoam insulation is not necessary.
    3. Record the voltage.
-   4. Replace the battery repeat for the next.  
+   4. Replace the battery and repeat for the next.  
     Always work from `C01` to `C14` in order.
 1. Start the same chamber program again, setting `Advance Time` to the program time recorded earlier.
 
@@ -88,5 +88,6 @@ Perform a low temperature EMF measurement at any point of a low temperature stor
 1. Always Begin `C08` to `C14` first following a low temperature storage period.
 1. Follow with `C01` to `C07` discharge tests.
 1. Vary the discharge of `C01` to `C07`. Then replace `C08` to `C14` on the bench for varied discharge.
+1. Measure the EMF of all batteries after varied discharge using the Agilent 34450A 5.5 Digit Multimeter.
 1. Begin the next low temperature storage period immediately following varied discharge of `C08` to `C14`.  
   Delay start of varied discharge tests if necessary to prevent idle standing at deep discharge.

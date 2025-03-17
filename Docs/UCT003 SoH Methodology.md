@@ -17,7 +17,8 @@ Lawrence Stanton
 
 ## Summary
 
-This experiment is focused at investigating the long-term State of Health (SoH) effects of AGM sealed lead acid batteries in extreme low temperature conditions. Batteries will set to a variety of States of Charge (SoC) and then subjected to low temperature conditions for extended periods of time, while being periodically cycled at 25 °C to evaluate the SoH.
+This experiment is focused at investigating the long-term State of Health (SoH) effects of AGM sealed lead acid batteries in extreme low temperature conditions.
+Batteries will be set to a range of States of Charge (SoC) and then subjected to low temperature conditions for extended periods of time, while being periodically subjected to a full Depth of Discharge test at 25 °C to evaluate the SoH.
 
 ## Basic Test Parameters
 
@@ -46,8 +47,8 @@ Estimated Total Test Time: **3 Months**
 
 The experiment will be composed of several functional test stages:
 
-1. [Varied Discharge](#varied-discharge)
-2. [Low Temperature Storage](#low-temperature-storage) (including EMF Voltage Measurement)
+1. [Varied Discharge](#varied-discharge) (including post EMF Voltage Measurement)
+2. [Low Temperature Storage](#low-temperature-storage) (including EMF Voltage Measurement at low temperatures)
 3. [Full Discharge Test and EIS](#full-discharge-test-and-eis) (including Preconditioning)
 
 Each follows sequentially, and repeated for a range of storage temperatures and durations.
@@ -59,21 +60,22 @@ start([ ])
 stage{Thermal Stages <br> S01-S10}
 repetition{Storage <br> Repetitions}
 varied[[Varied Discharge]]
-coldStorage[[Low Temp Storage]]
-warmStorage[[High Temp Storage]]
-emfPre[EMF]
-emfPost[EMF]
+coldStorage[[Low Temp Storage<br>24h or 72h]]
+warmStorage[[High Temp Storage<br>24h]]
+emfVD[EMF<br>Varied Discharge]
+emfLT[EMF<br>Low Temp]
 discharge[[EIS & Full Discharge]]
 done([ ])
 
 start --> discharge
 stage -->|Next| varied
-varied --> repetition
-repetition -->|Next| emfPre
-emfPre --> coldStorage
+varied --> emfVD
+emfVD --> repetition
+repetition -->|Next| coldStorage
+coldStorage -..->|interrupt only once<br> per temperature| emfLT
+emfLT -.-> coldStorage
 coldStorage --> warmStorage
-warmStorage --> emfPost
-emfPost --> repetition
+warmStorage --> repetition
 repetition -->|Done| discharge
 discharge --> stage
 
@@ -114,17 +116,21 @@ cycle -->|Next| discharge
 cycle -->|Done| done
 ```
 
-> The 30min rest periods evaluate for the EMF at that point, the 5min rest period is a simple workaround for the test bench, which may skip the float step if the current drops to zero.
+> The 30min rest periods evaluate the EMF at that point, the 5min rest period is a simple workaround for the test bench, which may skip the float step if the current drops to zero.
 
 2 repetitions allow for a first partial discharge from the prior varied discharge conditions, following which a full recharge, full discharge, and second full recharge follow.
 
-The EIS program is the same as used in UCT002. Both the EIS and discharge test are always done at room temperature, but additional low temperature EIS tests may be performed if deemed necessary. Allow for 1 day at room temperature to warm up.
+The EIS program is the same as used in UCT002. Both the EIS and discharge test are always done at room temperature. Allow for 1 day at room temperature to warm up before stating these tests.
+Additional low temperature EIS tests might be performed if deemed necessary, but are not currently planned.
+
+> EIS tests have been suspended due to issues with the spectrometer.
 
 Please monitor the discharge amounts and report any if any battery drops to <5Ah discharge capacity or other anomalies before proceeding to the next varied discharge step.
 
-**Preconditioning**
+#### Preconditioning
 
-To evaluate the initial capacity for a 1.57 A (5 hour) discharge rate against the other charging parameters; at factory conditions prior to `S01` and the first varied discharge, the batteries should undergo an additional initial EIS and full discharge test. These few cycles should also remove any initial artefacts from the batteries' manufacturing.
+To evaluate the initial capacity for a 1.57 A (5 hour) discharge rate against the other charging parameters; at factory conditions, the batteries should undergo an additional initial full discharge test.
+These few cycles should also remove any initial artefacts from the batteries' manufacturing.
 
 ### Varied Discharge
 
@@ -137,13 +143,20 @@ flowchart LR
 start([ ])
 
 discharge[Discharge<br>1.57 A &rarr; n Ah &vert; &leq; 10.5 V]
+wait(((Wait)))
+emf{{Manual EMF Measurement<br>Agilent 34450A}}
 done([ ])
 
 start --> discharge
-discharge --> done
+discharge --> wait
+wait --> emf
+emf --> done
 ```
 
-> The deepest discharge batteries (`C08`-`C14`) should be done last and then immediately proceed to low temperature storage. It is acceptable to allow `C01`-`C07` to wait at their varied discharge SoC while `C08`-`C14` complete.
+After the varied discharge, the batteries should be left for some time (>1h) to rest before taking a manual EMF measurement with the Agilent 34450A multimeter.
+
+> The deepest discharge batteries (`C08`-`C14`) should be done last.
+> It is acceptable to allow `C01`-`C07` to wait at their varied discharge SoC while `C08`-`C14` complete.
 
 Initial discharge tests indicate a >6Ah initial capacity, given the charging parameters of this test, compared to the manufacturer's 1.57A capacity is 7.85Ah.
 
@@ -159,7 +172,9 @@ The following amounts should be used for each battery:
 |  `C06`  |     2.25 Ah      |  `C13`  |     5.40 Ah      |
 |  `C07`  |     2.70 Ah      |  `C14`  |     5.85 Ah      |
 
-> `C14` will end very near to the 10.5 V cut-off voltage. Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility. Proceed normally if this occurs, the SoC estimates will simply be scaled to assume `C14` is at 0% SoC.
+> `C14` will end very near to the 10.5 V cut-off voltage.
+> Ensure the 10.5 V threshold is programmed as an alternate exit condition to handle this possibility.
+> Proceed normally if this occurs, the SoC estimates will simply be scaled to assume `C14` is at 0% SoC.
 
 ### Low Temperature Storage
 
@@ -178,22 +193,25 @@ The batteries shall be repeatedly stored in open circuit in the Environmental Te
 | `S09` |   -40 °C    |      3      |   24h    |
 | `S10` |   -40 °C    |      1      |   72h    |
 
-Between each stage there shall be an interim storage period of 24h at high temperature, which may either be done actively at 25 °C or passively in free air.
+Between each stage there shall be an interim storage period of 24h at high temperature, which may either be done actively at 25 °C within the ETC or passively in free air.
 
 Total Storage Time: **40 Days (20 at low temperature)**
 
 Complete the schedule strictly in the above sequence from `S01` to `S10`.
 
-The temporal accuracy of the storage periods is not critical, but should remain within ±2 hours of the scheduled duration. The duration is simply measured from the time the ETC is set to run to the time it is stopped, neglecting any time to cool or heat up.
+The temporal accuracy of the storage periods is not critical, but should remain within ±2 hours of the scheduled duration.
+The duration is simply measured from the time the ETC is set to run to the time it is stopped, neglecting any time to cool or heat up.
 
 > Unlike previous experiments, this experiment will run from warmest to coldest temperatures.  
-Ensure batteries are dry after being in the water bath before placing in the ETC, and avoid water intruding into the cell's venting cap at the top of the battery.
 
 It is acceptable to remotely turn off the ETC and wait, for a maximum of 2 days, before starting discharge tests when the scheduled end time is outside working hours.
 
-**EMF Voltage Measurement**
+### Low Temperature EMF Voltage Measurement
 
-The EMF voltage is an interesting metric to record for the low temperatures. At the end of any one repetition within a stage of temperature (only one measurement for each temperature), measure each battery's voltage as it is removed from the test chamber. A precise (5.5 or 6.5 digit) and calibrated multimeter should be used.
+The EMF voltage at low temperature is an interesting metric to record for the low temperatures.
+During any one repetition within a temperature (either during one of the 24h storage cycles or alternatively the 72h cycle), interrupt the rest and measure each battery's voltage with the Agilent 34450A multimeter.
+Do so quickly and resume the ETC program immediately after.
+It is not necessary to use the styrofoam insulation for these measurements.
 
 ### Alarms
 
