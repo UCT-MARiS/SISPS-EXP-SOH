@@ -47,8 +47,8 @@ jobs:
           MERMAID_FILTER_FORMAT: pdf
         run: |
           pandoc --version
-          pandoc --filter mermaid-filter --from gfm -o "UCT003\ SoH\ Methodology.pdf" "Docs/UCT003\ SoH\ Methodology.md"
-          pandoc --filter mermaid-filter --from gfm -o "UCT003\ Operator\ Instructions.pdf" "Docs/UCT003\ Operator\ Instructions.md"
+          pandoc --filter mermaid-filter --from gfm -o "UCT003 SoH Methodology.pdf" "Docs/UCT003 SoH Methodology.md"
+          pandoc --filter mermaid-filter --from gfm -o "UCT003 Operator Instructions.pdf" "Docs/UCT003 Operator Instructions.md"
 
       - name: Upload PDF
         uses: actions/upload-artifact@v4
