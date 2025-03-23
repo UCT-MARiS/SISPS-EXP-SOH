@@ -7,6 +7,7 @@ time_formatter = plt.FuncFormatter(
 )
 volt_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} V")
 amp_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} A")
+amp_hour_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} Ah")
 
 
 def plot_current_voltage(df: pd.DataFrame) -> plt.Figure:
