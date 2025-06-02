@@ -1,21 +1,26 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.ticker import FuncFormatter
 
 
-time_formatter = plt.FuncFormatter(
+time_formatter = FuncFormatter(
     lambda x, _: f"{int(x // 60**2):02d}:{int((x % 60**2) // 60):02d}"
 )
-volt_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} V")
-amp_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} A")
-amp_hour_formatter = plt.FuncFormatter(lambda x, _: f"{x:.2f} Ah")
+volt_formatter = FuncFormatter(lambda x, _: f"{x:.2f} V")
+amp_formatter = FuncFormatter(lambda x, _: f"{x:.2f} A")
+amp_hour_formatter = FuncFormatter(lambda x, _: f"{x:.2f} Ah")
 
 
-def plot_current_voltage(df: pd.DataFrame) -> plt.Figure:
+def plot_current_voltage(
+    df: pd.DataFrame,
+    **kwargs,
+) -> Figure:
     fig, ax = plt.subplots()
     ax2 = ax.twinx()
 
-    ax.plot(df["Total Time"], df["Current"], label="Current")
-    ax2.plot(df["Total Time"], df["Voltage"], color="r", label="Voltage")
+    ax.plot(df["Total Time"], df["Current"], label="Current", **kwargs)
+    ax2.plot(df["Total Time"], df["Voltage"], color="r", label="Voltage", **kwargs)
 
     ax2.set_ylabel("Voltage")
     ax.set_ylabel("Current")
