@@ -9,6 +9,7 @@ dependencies:
   - pandas
   - openpyxl
   - tabulate
+  - opencv
   - pip
   - pip:
       - darkdetect
