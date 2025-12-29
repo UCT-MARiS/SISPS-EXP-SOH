@@ -1,6 +1,8 @@
 # Python
 .conda
-Plots/
+Plots/*
+!Plots/Latex/
+
 __pycache__/
 
 # Documents
@@ -10,3 +12,4 @@ mermaid-filter.err
 
 # Other
 .DS_Store
+
