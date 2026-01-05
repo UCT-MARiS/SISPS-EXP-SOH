@@ -4,6 +4,7 @@
   "dictionaryDefinitions": [],
   "dictionaries": ["python", "filetypes"],
   "words": [
+    "coeffs",
     "darkdetect",
     "DSCH",
     "figsize",
@@ -11,6 +12,7 @@
     "linestyle",
     "papermode",
     "pdflatex",
+    "polyfit",
     "rcdefaults",
     "rcfonts",
     "SANAP",
