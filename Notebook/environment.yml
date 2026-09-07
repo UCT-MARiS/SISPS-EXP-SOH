@@ -13,3 +13,5 @@ dependencies:
   - pip
   - pip:
       - darkdetect
+      - import_ipynb
+      - matplotlib-label-lines
